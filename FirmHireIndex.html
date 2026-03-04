@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FirmHire | Recruitment Reimagined</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .modal { transition: opacity 0.2s ease; }
+        body.modal-active { overflow: hidden; }
+        .btn-shadow { box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-white text-slate-900 font-sans">
+
+    <nav class="flex items-center justify-between px-10 py-5 sticky top-0 bg-white z-50 border-b border-gray-50">
+        <div class="flex items-center">
+            <img src="logo.png" alt="FirmHire Logo" class="h-10 w-auto">
+        </div>
+        <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-600">
+            <a href="#solutions" class="hover:text-blue-600 transition">Solutions</a>
+            <a href="#" class="hover:text-blue-600 transition">Testimonials</a>
+            <a href="#" class="hover:text-blue-600 transition">Partners</a>
+            <button onclick="toggleModal()" class="bg-[#FF7A30] text-white px-6 py-2.5 rounded-md font-bold hover:bg-orange-600 transition btn-shadow">
+                Request Demo
+            </button>
+        </div>
+    </nav>
+
+    <header class="max-w-6xl mx-auto px-6 py-24 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-slate-900">
+            Find Your Future. Build Your Team.
+        </h1>
+        <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Recruitment Reimagined. Leveraging AI-driven matching to connect top talent with leading companies.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-5 mb-24">
+            <a href="https://MySkillsTree.com" target="_blank" class="bg-[#007BFF] text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition btn-shadow inline-block">
+                For Candidates
+            </a>
+            <button onclick="toggleModal()" class="bg-[#2ECC71] text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-green-600 transition btn-shadow">
+                For Employers
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-4xl mx-auto pt-16 border-t border-gray-100">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                    <i class="fas fa-briefcase text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800">Career Opportunities</h3>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                    <i class="fas fa-handshake text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800">Talent Acquisition</h3>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                    <i class="fas fa-globe text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800">Global Network</h3>
+            </div>
+        </div>
+    </header>
+
+    <section id="solutions" class="bg-slate-50 py-24 px-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
+                <i class="fas fa-magnifying-glass-chart text-4xl text-blue-500 mb-6"></i>
+                <h4 class="text-2xl font-bold mb-4">Smart Matching</h4>
+                <p class="text-slate-500">Proprietary algorithms that pair the right skills with the right culture.</p>
+            </div>
+            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
+                <i class="fas fa-shield-check text-4xl text-blue-500 mb-6"></i>
+                <h4 class="text-2xl font-bold mb-4">Verified Profiles</h4>
+                <p class="text-slate-500">Vetted candidates and companies ensuring trust in every interaction.</p>
+            </div>
+            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
+                <i class="fas fa-chart-line text-4xl text-blue-500 mb-6"></i>
+                <h4 class="text-2xl font-bold mb-4">Growth Solutions</h4>
+                <p class="text-slate-500">Scaling your team or career with data-backed insights.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-slate-400 text-sm border-t border-gray-100">
+        <p>© 2026 FirmHire. All rights reserved.</p>
+    </footer>
+
+    <div id="modal" class="opacity-0 pointer-events-none fixed inset-0 flex items-center justify-center z-[100] transition-opacity duration-300">
+        <div onclick="toggleModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+        <div class="bg-white w-full max-w-md mx-auto rounded-3xl shadow-2xl z-[101] p-10 relative">
+            <button onclick="toggleModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-2">Employer Inquiry</h2>
+            <p class="text-slate-500 mb-8">Reach back to us for talent solutions.</p>
+            
+            <form id="employerForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
+                    <input type="email" required placeholder="email@company.com" class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Phone Number</label>
+                    <input type="tel" required placeholder="+1 (555) 000-0000" class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">What are you looking for?</label>
+                    <textarea required rows="4" placeholder="Briefly describe your hiring needs..." class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition shadow-lg">
+                    Submit Inquiry
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal() {
+            const body = document.querySelector('body');
+            const modal = document.getElementById('modal');
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            body.classList.toggle('modal-active');
+        }
+
+        document.getElementById('employerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you! We have received your data and will contact you via email and phone shortly.');
+            toggleModal();
+            this.reset();
+        });
+    </script>
+</body>
+</html>

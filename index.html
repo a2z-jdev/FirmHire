@@ -3,119 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FirmHire | Recruitment Reimagined</title>
+    <title>FirmHire | Global Talent Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .modal { transition: opacity 0.2s ease; }
-        body.modal-active { overflow: hidden; }
-        .btn-shadow { box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1); }
+        .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .hero-gradient { background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.7) 100%); }
+        .hover-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .text-gradient { background: linear-gradient(to right, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-250px * 5)); }
+        }
+        .slider { overflow: hidden; position: relative; width: 100%; }
+        .slide-track { display: flex; width: calc(250px * 10); animation: scroll 40s linear infinite; }
+        .slide { width: 250px; display: flex; align-items: center; justify-content: center; }
+        .slide img { height: 40px; filter: grayscale(100%); opacity: 0.5; transition: all 0.3s; }
+        .slide img:hover { filter: grayscale(0%); opacity: 1; }
     </style>
 </head>
-<body class="bg-white text-slate-900 font-sans">
+<body class="bg-slate-50 text-slate-900 font-sans scroll-smooth">
 
-    <nav class="flex items-center justify-between px-10 py-5 sticky top-0 bg-white z-50 border-b border-gray-50">
-        <div class="flex items-center">
-            <img src="logo.png" alt="FirmHire Logo" class="h-10 w-auto">
-        </div>
-        <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-600">
-            <a href="#solutions" class="hover:text-blue-600 transition">Solutions</a>
-            <a href="#" class="hover:text-blue-600 transition">Testimonials</a>
-            <a href="#" class="hover:text-blue-600 transition">Partners</a>
-            <button onclick="toggleModal()" class="bg-[#FF7A30] text-white px-6 py-2.5 rounded-md font-bold hover:bg-orange-600 transition btn-shadow">
-                Request Demo
+    <nav class="glass-nav fixed w-full z-[100] px-6 md:px-12 py-4 flex items-center justify-between">
+        <img src="logo.png" alt="FirmHire" class="h-9 w-auto">
+        <div class="hidden md:flex items-center gap-10">
+            <a href="#solutions" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Solutions</a>
+            <a href="#about" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">About</a>
+            <button onclick="toggleModal()" class="bg-[#FF7A30] text-white px-7 py-3 rounded-full shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all text-xs font-bold uppercase tracking-widest">
+                Become a Partner
             </button>
         </div>
     </nav>
 
-    <header class="max-w-6xl mx-auto px-6 py-24 text-center">
-        <h1 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-slate-900">
-            Find Your Future. Build Your Team.
-        </h1>
-        <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Recruitment Reimagined. Leveraging AI-driven matching to connect top talent with leading companies.
-        </p>
-        
-        <div class="flex flex-col sm:flex-row justify-center gap-5 mb-24">
-            <a href="https://MySkillsTree.com" target="_blank" class="bg-[#007BFF] text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition btn-shadow inline-block">
-                For Candidates
-            </a>
-            <button onclick="toggleModal()" class="bg-[#2ECC71] text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-green-600 transition btn-shadow">
-                For Employers
-            </button>
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-slate-900">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" alt="Corporate Office" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 hero-gradient"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-4xl mx-auto pt-16 border-t border-gray-100">
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                    <i class="fas fa-briefcase text-blue-500 text-2xl"></i>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                    <span class="block mb-6">Find your future.</span>
+                    <span class="text-blue-400">Build your team.</span>
+                </h1>
+                <p class="text-xl text-slate-300 mb-10 leading-relaxed max-w-xl">
+                    Experience the next generation of recruitment. We blend AI-powered precision with global human insights to scale world-class teams.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-5">
+                    <a href="https://MySkillsTree.com" target="_blank" class="bg-blue-600 text-white px-10 py-5 rounded-full font-bold text-center hover:bg-blue-700 transition-all hover-lift shadow-xl shadow-blue-900/20">
+                        For Candidates
+                    </a>
+                    <button onclick="toggleModal()" class="bg-white text-slate-900 px-10 py-5 rounded-full font-bold hover:bg-slate-100 transition-all hover-lift shadow-lg">
+                        For Employers
+                    </button>
                 </div>
-                <h3 class="font-bold text-slate-800">Career Opportunities</h3>
             </div>
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                    <i class="fas fa-handshake text-blue-500 text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-slate-800">Talent Acquisition</h3>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                    <i class="fas fa-globe text-blue-500 text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-slate-800">Global Network</h3>
-            </div>
-        </div>
-    </header>
-
-    <section id="solutions" class="bg-slate-50 py-24 px-6">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
-                <i class="fas fa-magnifying-glass-chart text-4xl text-blue-500 mb-6"></i>
-                <h4 class="text-2xl font-bold mb-4">Smart Matching</h4>
-                <p class="text-slate-500">Proprietary algorithms that pair the right skills with the right culture.</p>
-            </div>
-            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
-                <i class="fas fa-shield-check text-4xl text-blue-500 mb-6"></i>
-                <h4 class="text-2xl font-bold mb-4">Verified Profiles</h4>
-                <p class="text-slate-500">Vetted candidates and companies ensuring trust in every interaction.</p>
-            </div>
-            <div class="bg-white p-12 rounded-2xl shadow-sm text-center">
-                <i class="fas fa-chart-line text-4xl text-blue-500 mb-6"></i>
-                <h4 class="text-2xl font-bold mb-4">Growth Solutions</h4>
-                <p class="text-slate-500">Scaling your team or career with data-backed insights.</p>
+            <div class="hidden md:block relative">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" alt="Team Collaboration" class="rounded-[2rem] shadow-2xl border-8 border-white/10 hover-lift">
             </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center text-slate-400 text-sm border-t border-gray-100">
-        <p>© 2026 FirmHire. All rights reserved.</p>
+    <div class="bg-white py-12 border-b border-slate-100 slider">
+        <div class="slide-track">
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Slack_Technologies_Logo.svg" alt="Slack"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"></div>
+            <div class="slide"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Slack_Technologies_Logo.svg" alt="Slack"></div>
+        </div>
+    </div>
+
+    <div class="bg-white py-16 border-b border-slate-100 relative z-20">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 items-center text-center">
+            <div><p class="text-4xl font-extrabold text-slate-900">500+</p><p class="text-[10px] text-blue-600 font-black uppercase tracking-[0.3em]">Global Partners</p></div>
+            <div><p class="text-4xl font-extrabold text-slate-900">12k+</p><p class="text-[10px] text-blue-600 font-black uppercase tracking-[0.3em]">Talent Placed</p></div>
+            <div><p class="text-4xl font-extrabold text-slate-900">48h</p><p class="text-[10px] text-blue-600 font-black uppercase tracking-[0.3em]">Matching Speed</p></div>
+            <div><p class="text-4xl font-extrabold text-slate-900">98%</p><p class="text-[10px] text-blue-600 font-black uppercase tracking-[0.3em]">Success Rate</p></div>
+        </div>
+    </div>
+
+    <section class="py-32 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <p class="text-blue-600 font-black uppercase tracking-[0.3em] text-xs mb-4">Success Stories</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">Trusted by Global Leaders</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 hover-lift">
+                    <div class="flex gap-1 text-orange-400 mb-6 text-sm">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-lg italic mb-8 leading-relaxed">"The AI matching is frighteningly accurate. We found our Lead Data Scientist in 72 hours—a role we'd been trying to fill for months."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Sarah Chen">
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">Sarah Chen</p>
+                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">VP Engineering, TechFlow</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 hover-lift">
+                    <div class="flex gap-1 text-orange-400 mb-6 text-sm">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-lg italic mb-8 leading-relaxed">"FirmHire doesn't just send resumes; they send solutions. Their focus on skill-based hiring removed the guesswork from our scaling."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100" alt="Marcus Thorne">
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">Marcus Thorne</p>
+                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Head of Talent, NexaGrid</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 hover-lift">
+                    <div class="flex gap-1 text-orange-400 mb-6 text-sm">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-lg italic mb-8 leading-relaxed">"The most seamless candidate experience we've had. The interface is intuitive, and the quality of the matches is consistently high."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" alt="Elena Rodriguez">
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">Elena Rodriguez</p>
+                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">COO, Stratos Partners</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-32 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800" alt="Innovation Meeting" class="rounded-[3rem] shadow-2xl relative z-10">
+                    <div class="absolute -bottom-10 -right-10 bg-blue-600 text-white p-10 rounded-3xl z-20 hidden lg:block">
+                        <p class="text-5xl font-black mb-2 leading-none">AI+</p>
+                        <p class="text-xs uppercase tracking-[0.2em] font-bold">Human Intuition</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-blue-600 font-black uppercase tracking-[0.3em] text-xs mb-6">Our Mission</p>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-8 tracking-tight leading-tight text-slate-900">
+                        Leveraging Intelligence to <span class="text-gradient">Humanize Hiring.</span>
+                    </h2>
+                    <div class="space-y-6 text-lg text-slate-600 leading-relaxed">
+                        <p>At FirmHire, we believe talent isn't just a resume—it's a trajectory. Traditional recruitment is broken by bias and outdated keywords. We’ve rebuilt the process from the ground up.</p>
+                        <p>By integrating advanced AI with a value-driven personal approach, we map candidates based on <strong>actual skill proficiency</strong> and cultural synergy.</p>
+                    </div>
+                    <div class="mt-12 grid grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-slate-900 font-bold mb-2"><i class="fas fa-microchip text-blue-500 mr-2"></i> Skill-First Logic</p>
+                            <p class="text-sm text-slate-500">Removing bias through data-driven performance metrics.</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-900 font-bold mb-2"><i class="fas fa-bolt text-blue-500 mr-2"></i> Seamless Scaling</p>
+                            <p class="text-sm text-slate-500">Accelerating the path from discovery to first-day success.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solutions" class="py-32 px-6 max-w-7xl mx-auto relative">
+        <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Recruitment Reimagined</h2>
+            <div class="h-1.5 w-24 bg-blue-600 mx-auto rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="group bg-white p-12 rounded-[2.5rem] hover-lift border border-slate-100 shadow-sm">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-8 text-3xl">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">AI-Driven Matching</h3>
+                <p class="text-slate-500 leading-relaxed">Proprietary algorithms analyze 50+ data points to ensure perfect skills and culture alignment.</p>
+            </div>
+            <div class="group bg-white p-12 rounded-[2.5rem] hover-lift border border-slate-100 shadow-sm">
+                <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-8 text-3xl">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Verified Talent</h3>
+                <p class="text-slate-500 leading-relaxed">Rigorous multi-step vetting ensures only the top talent reaches your hiring manager.</p>
+            </div>
+            <div class="group bg-white p-12 rounded-[2.5rem] hover-lift border border-slate-100 shadow-sm">
+                <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-8 text-3xl">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Global Network</h3>
+                <p class="text-slate-500 leading-relaxed">Instantly access a worldwide network of professionals across every major tech hub.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 py-24 px-6 text-center">
+        <img src="logo.png" alt="FirmHire" class="h-8 mx-auto mb-8 brightness-0 invert opacity-40">
+        <p class="text-slate-600 text-[10px] uppercase tracking-[0.4em] font-black">© 2026 FirmHire. All rights reserved.</p>
     </footer>
 
-    <div id="modal" class="opacity-0 pointer-events-none fixed inset-0 flex items-center justify-center z-[100] transition-opacity duration-300">
-        <div onclick="toggleModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
-        <div class="bg-white w-full max-w-md mx-auto rounded-3xl shadow-2xl z-[101] p-10 relative">
-            <button onclick="toggleModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <h2 class="text-3xl font-bold mb-2">Employer Inquiry</h2>
-            <p class="text-slate-500 mb-8">Reach back to us for talent solutions.</p>
-            
-            <form id="employerForm" class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
-                    <input type="email" required placeholder="email@company.com" class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Phone Number</label>
-                    <input type="tel" required placeholder="+1 (555) 000-0000" class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">What are you looking for?</label>
-                    <textarea required rows="4" placeholder="Briefly describe your hiring needs..." class="w-full p-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition shadow-lg">
-                    Submit Inquiry
-                </button>
+    <div id="modal" class="opacity-0 pointer-events-none fixed inset-0 flex items-center justify-center z-[200] transition-all duration-300">
+        <div onclick="toggleModal()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+        <div class="bg-white w-full max-w-lg mx-auto rounded-[3rem] shadow-2xl z-[201] p-12 relative">
+            <button onclick="toggleModal()" class="absolute top-10 right-10 text-slate-300 hover:text-slate-900"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-black mb-4 tracking-tight">Let's Partner.</h2>
+            <form id="employerForm" class="space-y-4">
+                <input type="email" required placeholder="Work Email" class="w-full p-4 rounded-xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" required placeholder="Phone Number" class="w-full p-4 rounded-xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea required rows="4" placeholder="How can we help your team scale?" class="w-full p-4 rounded-xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition">Submit Partnership Request</button>
             </form>
         </div>
     </div>
@@ -128,10 +241,9 @@
             modal.classList.toggle('pointer-events-none');
             body.classList.toggle('modal-active');
         }
-
         document.getElementById('employerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Thank you! We have received your data and will contact you via email and phone shortly.');
+            alert('Request Received. Our team will contact you shortly.');
             toggleModal();
             this.reset();
         });

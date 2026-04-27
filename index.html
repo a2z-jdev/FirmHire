@@ -27,26 +27,25 @@
 <body class="bg-slate-50 text-slate-900 font-sans scroll-smooth">
     <nav class="glass-nav fixed top-0 left-0 w-full z-[100]">
         <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
-        <!-- LEFT GROUP -->
-            <div class="flex items-center gap-6">
-            <!-- LOGO (no fixed width anymore) -->
-                <div class="h-12 flex items-center overflow-hidden">
-                    <img src="logo.png" alt="FirmHire" class="h-full w-auto object-contain scale-125">
-                </div>
-                <!-- NAV LINKS -->
-                <div class="hidden md:flex items-center gap-8 ml-4 pl-6 border-l border-slate-200/60">
-                    <a href="#mission" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Mission</a>
-                    <a href="#solutions" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Solutions</a>
-                    <a href="#testimonials" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Testimonial</a>
-                </div>
+    <!-- LEFT: Logo -->
+        <div class="h-12 flex items-center overflow-hidden">
+            <img src="logo.png" alt="FirmHire" class="h-full w-auto object-contain scale-125">
+        </div>
+    <!-- RIGHT: Links + CTA -->
+        <div class="hidden md:flex items-center gap-6">
+    <!-- NAV LINKS -->
+        <div class="flex items-center gap-6">
+            <a href="#mission" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Mission</a>
+            <a href="#solutions" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Solutions</a>
+            <a href="#testimonials" class="text-xs font-bold tracking-widest text-slate-600 hover:text-blue-600 transition uppercase">Testimonial</a>
+        </div>
+    <!-- CTA -->
+        <button onclick="toggleModal()" class="bg-[#FF7A30] text-white px-7 py-3 rounded-full shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all text-xs font-bold uppercase tracking-widest">
+            Become a Partner
+        </button>
             </div>
-        <!-- RIGHT CTA -->
-            <button onclick="toggleModal()" class="bg-[#FF7A30] text-white px-7 py-3 rounded-full shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all text-xs font-bold uppercase tracking-widest">
-                Become a Partner
-            </button>
-
-            </div>
-        </nav>
+        </div>
+    </nav>
     <section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-slate-900">
         <div class="absolute inset-0 z-0">
             <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" alt="Corporate Office" class="w-full h-full object-cover opacity-60">

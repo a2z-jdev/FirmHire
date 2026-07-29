@@ -1,0 +1,109 @@
+/* Candidates panel — only state / motion (layout uses Tailwind) */
+
+:root {
+  --fh-panel-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.fh-candidates-open {
+  overflow: hidden;
+}
+
+.fh-candidates-panel {
+  transform: translateX(100%);
+  transition: transform 0.4s var(--fh-panel-ease);
+}
+
+body.fh-candidates-open .fh-candidates-panel {
+  transform: translateX(0);
+}
+
+.fh-candidates-backdrop {
+  transition: opacity 0.35s var(--fh-panel-ease);
+}
+
+body.fh-candidates-open .fh-candidates-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fh-multiselect-toggle.has-selection {
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+/* Hover scrollbars */
+.fh-job-feed,
+.fh-multiselect-options {
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+
+.fh-job-feed:hover,
+.fh-multiselect-options:hover {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+}
+
+.fh-job-feed::-webkit-scrollbar,
+.fh-multiselect-options::-webkit-scrollbar {
+  width: 0;
+}
+
+.fh-job-feed:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fh-multiselect-options:hover::-webkit-scrollbar {
+  width: 5px;
+}
+
+.fh-job-feed::-webkit-scrollbar-thumb,
+.fh-multiselect-options::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.fh-job-feed:hover::-webkit-scrollbar-thumb,
+.fh-multiselect-options:hover::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+.fh-job-feed::-webkit-scrollbar-track,
+.fh-multiselect-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Detail popover motion */
+.fh-job-detail-popover {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  scrollbar-width: none;
+}
+
+.fh-job-detail-popover::-webkit-scrollbar {
+  display: none;
+}
+
+.fh-job-detail-popover.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.fh-job-detail-popover.popover-left {
+  transform-origin: right center;
+}
+
+.fh-job-detail-popover.popover-right {
+  transform-origin: left center;
+}
+
+@media (max-width: 767px) {
+  /* Hover popover is desktop-only */
+  .fh-job-detail-popover {
+    display: none !important;
+  }
+}

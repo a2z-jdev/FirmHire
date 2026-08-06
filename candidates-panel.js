@@ -12,16 +12,16 @@
   var msToggleEl = document.getElementById("fh-ms-toggle");
   var msLabelEl = document.getElementById("fh-ms-label");
   var msPanelEl = document.getElementById("fh-ms-panel");
-  var msSearchEl = document.getElementById("fh-ms-search");
   var msOptionsEl = document.getElementById("fh-ms-options");
   var msClearEl = document.getElementById("fh-ms-clear");
   var msApplyEl = document.getElementById("fh-ms-apply");
+  var selectedCategoryEl = document.getElementById("fh-selected-category");
 
   if (!openBtn || !panel || !jobListEl) return;
 
   var allJobs = [];
   var allCategories = [];
-  var selectedCategories = new Set();
+  var selectedCategory = null;
   var jobsLoaded = false;
   var jobsLoading = false;
   var popoverHideTimer = null;
@@ -367,50 +367,56 @@
 
   function updateCategoryLabel() {
     if (!msLabelEl || !msToggleEl || !msClearEl) return;
-    var count = selectedCategories.size;
-    if (count === 0) {
+    if (!selectedCategory) {
       msLabelEl.textContent = "All Categories";
-    } else if (count === 1) {
-      msLabelEl.textContent = Array.from(selectedCategories)[0];
     } else {
-      msLabelEl.textContent = count + " Categories Selected";
+      msLabelEl.textContent = selectedCategory;
     }
-    msToggleEl.classList.toggle("has-selection", count > 0);
-    msClearEl.hidden = count === 0;
+    msToggleEl.classList.toggle("has-selection", !!selectedCategory);
+    msClearEl.hidden = !selectedCategory;
+
+    if (selectedCategoryEl) {
+      if (selectedCategory) {
+        selectedCategoryEl.hidden = false;
+        selectedCategoryEl.innerHTML =
+          'Category: <span class="text-blue-600">' +
+          escapeHtml(selectedCategory) +
+          "</span>";
+      } else {
+        selectedCategoryEl.hidden = true;
+        selectedCategoryEl.textContent = "";
+      }
+    }
   }
 
-  function renderCategoryOptions(filterText) {
+  function renderCategoryOptions() {
     if (!msOptionsEl) return;
-    var query = (filterText || "").trim().toLowerCase();
-    var matches = allCategories.filter(function (cat) {
-      return cat.toLowerCase().includes(query);
-    });
 
     msOptionsEl.innerHTML = "";
 
-    if (!matches.length) {
+    if (!allCategories.length) {
       msOptionsEl.innerHTML =
         '<p class="m-0 px-2 py-3 text-center text-xs text-slate-500">No categories found</p>';
       return;
     }
 
-    matches.forEach(function (cat) {
+    allCategories.forEach(function (cat) {
+      var isSelected = selectedCategory === cat;
       var option = document.createElement("label");
       option.className =
         "flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-700 hover:bg-blue-50" +
-        (selectedCategories.has(cat) ? " bg-blue-50" : "");
+        (isSelected ? " bg-blue-50" : "");
       option.innerHTML =
         '<input type="checkbox" class="accent-blue-600" ' +
-        (selectedCategories.has(cat) ? "checked" : "") +
+        (isSelected ? "checked" : "") +
         " /><span>" +
         escapeHtml(cat) +
         "</span>";
 
       var input = option.querySelector("input");
       input.addEventListener("change", function () {
-        if (input.checked) selectedCategories.add(cat);
-        else selectedCategories.delete(cat);
-        option.classList.toggle("bg-blue-50", input.checked);
+        selectedCategory = input.checked ? cat : null;
+        renderCategoryOptions();
         updateCategoryLabel();
         applyFilter();
       });
@@ -431,21 +437,19 @@
       return a.localeCompare(b);
     });
 
-    Array.from(selectedCategories).forEach(function (sel) {
-      if (!categories.has(sel)) selectedCategories.delete(sel);
-    });
+    if (selectedCategory && !categories.has(selectedCategory)) {
+      selectedCategory = null;
+    }
 
-    renderCategoryOptions(msSearchEl ? msSearchEl.value : "");
+    renderCategoryOptions();
     updateCategoryLabel();
   }
 
   function applyFilter() {
     var filtered = allJobs;
-    if (selectedCategories.size > 0) {
+    if (selectedCategory) {
       filtered = allJobs.filter(function (job) {
-        return (job.category || []).some(function (cat) {
-          return selectedCategories.has(cat);
-        });
+        return (job.category || []).indexOf(selectedCategory) !== -1;
       });
     }
     renderJobs(filtered);
@@ -457,8 +461,7 @@
     msPanelEl.classList.add("flex");
     msPanelEl.setAttribute("aria-hidden", "false");
     msToggleEl.setAttribute("aria-expanded", "true");
-    renderCategoryOptions(msSearchEl ? msSearchEl.value : "");
-    if (msSearchEl) msSearchEl.focus();
+    renderCategoryOptions();
   }
 
   function closeCategoryPanel() {
@@ -552,16 +555,10 @@
     });
   }
 
-  if (msSearchEl) {
-    msSearchEl.addEventListener("input", function () {
-      renderCategoryOptions(msSearchEl.value);
-    });
-  }
-
   if (msClearEl) {
     msClearEl.addEventListener("click", function () {
-      selectedCategories.clear();
-      renderCategoryOptions(msSearchEl ? msSearchEl.value : "");
+      selectedCategory = null;
+      renderCategoryOptions();
       updateCategoryLabel();
       applyFilter();
     });

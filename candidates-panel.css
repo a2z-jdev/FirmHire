@@ -32,6 +32,12 @@ body.fh-candidates-open .fh-candidates-backdrop {
   background: #eff6ff;
 }
 
+.fh-jobs-divider {
+  height: 2px;
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
 /* Hover scrollbars */
 .fh-job-feed,
 .fh-multiselect-options {

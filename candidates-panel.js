@@ -4,9 +4,15 @@
   var closeBtn = document.getElementById("fh-close-candidates");
   var backdrop = document.getElementById("fh-candidates-backdrop");
   var panel = document.getElementById("fh-candidates-panel");
-  var jobListEl = document.getElementById("fh-job-list");
   var jobCountEl = document.getElementById("fh-job-count");
   var jobEmptyEl = document.getElementById("fh-job-empty");
+  var firmHireSectionEl = document.getElementById("fh-firmhire-section");
+  var otherSectionEl = document.getElementById("fh-other-section");
+  var jobsDividerEl = document.getElementById("fh-jobs-divider");
+  var firmHireListEl = document.getElementById("fh-firmhire-list");
+  var otherListEl = document.getElementById("fh-other-list");
+  var firmHireCountEl = document.getElementById("fh-firmhire-count");
+  var otherCountEl = document.getElementById("fh-other-count");
   var detailPopoverEl = document.getElementById("fh-job-detail-popover");
   var categoryMultiselectEl = document.getElementById("fh-category-multiselect");
   var msToggleEl = document.getElementById("fh-ms-toggle");
@@ -17,11 +23,15 @@
   var msApplyEl = document.getElementById("fh-ms-apply");
   var selectedCategoryEl = document.getElementById("fh-selected-category");
 
-  if (!openBtn || !panel || !jobListEl) return;
+  if (!openBtn || !panel || !firmHireListEl || !otherListEl) return;
 
   var allJobs = [];
+  var firmHireJobs = [];
+  var otherJobs = [];
   var allCategories = [];
   var selectedCategory = null;
+  var LEVEL_FRESHER = "Fresher";
+  var LEVEL_MANAGER = "Manager";
   var jobsLoaded = false;
   var jobsLoading = false;
   var popoverHideTimer = null;
@@ -36,6 +46,13 @@
 
   function jobsApiUrl() {
     return window.FIRMHIRE_JOBS_API || "https://stg-jobscrapper.myskillstree.com/api/jobs";
+  }
+
+  function firmHireJobsApiUrl() {
+    return (
+      window.FIRMHIRE_JDS_API ||
+      "https://prd.beanstalk.myskillstree.com/skill/api/v1/skills/dynamic/JDS?filter=costCenter%3ACSORG-146197%7Cmstatus%3A!ARCHIVE%7CjdsType%3A!SEARCH&sortField=createdTime&sortOrder=desc"
+    );
   }
 
   function escapeHtml(text) {
@@ -69,9 +86,99 @@
   }
 
   function formatSourceLabel(source) {
+    if (source === "firmhire") return "FirmHire";
     if (source === "naukri") return "Naukri";
     if (source === "internshala") return "Internshala";
     return source || "Job board";
+  }
+
+  function formatSalary(job) {
+    if (job.hideSalary === "Yes") return null;
+    var low = Number(job.salaryLow);
+    var high = Number(job.salaryHigh);
+    if ((!low && !high) || (low === 0 && high === 0)) return null;
+    if (low && high) return low + " - " + high;
+    return String(low || high);
+  }
+
+  function extractJdsJobs(payload) {
+    var list = [];
+    if (Array.isArray(payload)) list = payload;
+    else if (payload && Array.isArray(payload.data)) list = payload.data;
+    else if (payload && Array.isArray(payload.content)) list = payload.content;
+    else if (payload && Array.isArray(payload.jobs)) list = payload.jobs;
+    return list.filter(function (item) {
+      return item && item.id && item.title;
+    });
+  }
+
+  function normalizeFirmHireJob(job) {
+    if (!job || !job.id || !job.title) return null;
+    var category = job.jdCategoryName ? [job.jdCategoryName] : [];
+    return {
+      id: job.id,
+      title: job.title,
+      company: job.jdCompany || "FirmHire",
+      location: job.jobLocation || "Remote",
+      salary: formatSalary(job),
+      experience: job.experienceLevel || job.experience || null,
+      posted: null,
+      source: "firmhire",
+      skills: Array.isArray(job.skills) ? job.skills : [],
+      category: category,
+      link: job.shortURL || null,
+    };
+  }
+
+  function normalizeText(value) {
+    return String(value || "").toLowerCase();
+  }
+
+  function parseYearRange(experience) {
+    var text = normalizeText(experience);
+    var range = text.match(/(\d+)\s*(?:-|–|to)\s*(\d+)/);
+    if (range) {
+      return { min: Number(range[1]), max: Number(range[2]) };
+    }
+    var single = text.match(/^(\d+)\s*(?:yrs?|years?)?$/);
+    if (single) {
+      return { min: Number(single[1]), max: Number(single[1]) };
+    }
+    return null;
+  }
+
+  function isFresherJob(job) {
+    var exp = normalizeText(job.experience);
+    var title = normalizeText(job.title);
+    if (/\bfresher\b/.test(exp) || /\bfresher\b/.test(title)) return true;
+    if (/\bentry\s*level\b/.test(exp) || /\bentry\b/.test(exp)) return true;
+    var range = parseYearRange(job.experience);
+    return !!(range && range.min === 0 && range.max <= 1);
+  }
+
+  function isManagerJob(job) {
+    var exp = normalizeText(job.experience);
+    var title = normalizeText(job.title);
+    if (/\bmanager\s*level\b/.test(exp) || /\bmanager\b/.test(exp)) return true;
+    return /\bmanager\b/.test(title);
+  }
+
+  function isLevelFilter(value) {
+    return value === LEVEL_FRESHER || value === LEVEL_MANAGER;
+  }
+
+  function jobMatchesFilter(job, filterValue) {
+    if (!filterValue) return true;
+    if (filterValue === LEVEL_FRESHER) return isFresherJob(job);
+    if (filterValue === LEVEL_MANAGER) return isManagerJob(job);
+    return (job.category || []).indexOf(filterValue) !== -1;
+  }
+
+  function filterByCategory(jobs) {
+    if (!selectedCategory) return jobs.slice();
+    return jobs.filter(function (job) {
+      return jobMatchesFilter(job, selectedCategory);
+    });
   }
 
   function renderSkillTags(skills) {
@@ -358,11 +465,35 @@
   }
 
   function setStatus(message, isEmpty) {
-    if (jobCountEl) jobCountEl.textContent = message;
+    if (jobCountEl) {
+      jobCountEl.textContent = message || "";
+      jobCountEl.hidden = !message;
+      jobCountEl.classList.toggle("hidden", !message);
+    }
     if (jobEmptyEl) {
       jobEmptyEl.textContent = isEmpty ? message : "";
       jobEmptyEl.hidden = !isEmpty;
     }
+  }
+
+  function setSectionVisibility(el, visible) {
+    if (!el) return;
+    el.hidden = !visible;
+    el.classList.toggle("hidden", !visible);
+    if (el === jobsDividerEl) return;
+    el.classList.toggle("flex", visible);
+  }
+
+  function openingsLabel(count) {
+    return count + " opening" + (count === 1 ? "" : "s");
+  }
+
+  function clearJobLists() {
+    firmHireListEl.innerHTML = "";
+    otherListEl.innerHTML = "";
+    setSectionVisibility(firmHireSectionEl, false);
+    setSectionVisibility(otherSectionEl, false);
+    setSectionVisibility(jobsDividerEl, false);
   }
 
   function updateCategoryLabel() {
@@ -379,7 +510,8 @@
       if (selectedCategory) {
         selectedCategoryEl.hidden = false;
         selectedCategoryEl.innerHTML =
-          'Category: <span class="text-blue-600">' +
+          (isLevelFilter(selectedCategory) ? "Level: " : "Category: ") +
+          '<span class="text-blue-600">' +
           escapeHtml(selectedCategory) +
           "</span>";
       } else {
@@ -427,17 +559,29 @@
 
   function populateCategoryFilter(jobs) {
     var categories = new Set();
+    var hasFresher = false;
+    var hasManager = false;
+
     jobs.forEach(function (job) {
       (job.category || []).forEach(function (cat) {
-        if (cat) categories.add(cat);
+        if (cat && !isLevelFilter(cat)) categories.add(cat);
       });
+      if (isFresherJob(job)) hasFresher = true;
+      if (isManagerJob(job)) hasManager = true;
     });
 
-    allCategories = Array.from(categories).sort(function (a, b) {
-      return a.localeCompare(b);
-    });
+    allCategories = [];
+    if (hasFresher) allCategories.push(LEVEL_FRESHER);
+    if (hasManager) allCategories.push(LEVEL_MANAGER);
+    Array.from(categories)
+      .sort(function (a, b) {
+        return a.localeCompare(b);
+      })
+      .forEach(function (cat) {
+        allCategories.push(cat);
+      });
 
-    if (selectedCategory && !categories.has(selectedCategory)) {
+    if (selectedCategory && allCategories.indexOf(selectedCategory) === -1) {
       selectedCategory = null;
     }
 
@@ -446,13 +590,7 @@
   }
 
   function applyFilter() {
-    var filtered = allJobs;
-    if (selectedCategory) {
-      filtered = allJobs.filter(function (job) {
-        return (job.category || []).indexOf(selectedCategory) !== -1;
-      });
-    }
-    renderJobs(filtered);
+    renderJobSections(filterByCategory(firmHireJobs), filterByCategory(otherJobs));
   }
 
   function openCategoryPanel() {
@@ -476,45 +614,117 @@
     return msPanelEl && !msPanelEl.classList.contains("hidden");
   }
 
-  function renderJobs(jobs) {
-    hideJobDetailPopover(0);
-    jobListEl.innerHTML = "";
+  function appendJobCards(listEl, jobs) {
+    for (var i = 0; i < jobs.length; i++) {
+      listEl.appendChild(renderJobCard(jobs[i]));
+    }
+  }
 
-    if (!jobs.length) {
+  function renderJobSections(firmJobs, sourceJobs) {
+    hideJobDetailPopover(0);
+    clearJobLists();
+
+    var firmCount = firmJobs.length;
+    var otherCount = sourceJobs.length;
+    var total = firmCount + otherCount;
+    var showBoth = firmCount > 0 && otherCount > 0;
+
+    if (!total) {
       setStatus("No jobs match your filters", true);
       return;
     }
 
-    setStatus(
-      jobs.length + " opening" + (jobs.length === 1 ? "" : "s"),
-      false
-    );
+    setStatus("", false);
 
-    for (var i = 0; i < jobs.length; i++) {
-      jobListEl.appendChild(renderJobCard(jobs[i]));
+    if (firmCount > 0) {
+      if (firmHireCountEl) {
+        firmHireCountEl.textContent = "FirmHire Jobs · " + openingsLabel(firmCount);
+      }
+      appendJobCards(firmHireListEl, firmJobs);
+      setSectionVisibility(firmHireSectionEl, true);
     }
+
+    if (otherCount > 0) {
+      if (otherCountEl) {
+        otherCountEl.textContent = "Other Sources · " + openingsLabel(otherCount);
+      }
+      appendJobCards(otherListEl, sourceJobs);
+      setSectionVisibility(otherSectionEl, true);
+    }
+
+    setSectionVisibility(jobsDividerEl, showBoth);
+
+    if (firmHireSectionEl) {
+      firmHireSectionEl.classList.toggle("flex-1", firmCount > 0 && !showBoth);
+      firmHireSectionEl.classList.toggle("flex-none", showBoth);
+      firmHireSectionEl.classList.toggle("max-h-[48%]", showBoth);
+    }
+  }
+
+  async function fetchJson(url) {
+    var res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to fetch (" + res.status + "): " + url);
+    return res.json();
   }
 
   async function loadJobs() {
     if (jobsLoaded || jobsLoading) return;
     jobsLoading = true;
     setStatus("Loading jobs…", false);
-    jobListEl.innerHTML =
+    clearJobLists();
+    firmHireListEl.innerHTML =
       '<p class="rounded-xl border border-slate-200 bg-white p-3.5 text-center text-sm text-slate-500 shadow-sm"><i class="fas fa-circle-notch fa-spin mr-1.5 text-blue-600"></i> Fetching openings…</p>';
+    setSectionVisibility(firmHireSectionEl, true);
 
     try {
-      var res = await fetch(jobsApiUrl());
-      if (!res.ok) throw new Error("Failed to fetch jobs (" + res.status + ")");
-      var jobs = await res.json();
-      if (!Array.isArray(jobs)) throw new Error("Unexpected jobs response");
-      allJobs = jobs;
+      var results = await Promise.allSettled([
+        fetchJson(firmHireJobsApiUrl()),
+        fetchJson(jobsApiUrl()),
+      ]);
+
+      var firmResult = results[0];
+      var otherResult = results[1];
+
+      if (firmResult.status === "fulfilled") {
+        firmHireJobs = extractJdsJobs(firmResult.value)
+          .map(normalizeFirmHireJob)
+          .filter(Boolean);
+      } else {
+        firmHireJobs = [];
+        if (firmResult.status === "rejected") {
+          console.error("FirmHire jobs failed:", firmResult.reason);
+        }
+      }
+
+      if (otherResult.status === "fulfilled" && Array.isArray(otherResult.value)) {
+        otherJobs = otherResult.value;
+      } else {
+        otherJobs = [];
+        if (otherResult.status === "rejected") {
+          console.error("Other source jobs failed:", otherResult.reason);
+        }
+      }
+
+      allJobs = firmHireJobs.concat(otherJobs);
       jobsLoaded = true;
+
+      if (!allJobs.length) {
+        clearJobLists();
+        setStatus(
+          "Unable to load openings right now. Please try again later.",
+          true
+        );
+        return;
+      }
+
       populateCategoryFilter(allJobs);
       applyFilter();
     } catch (err) {
       console.error(err);
+      firmHireJobs = [];
+      otherJobs = [];
       allJobs = [];
-      jobListEl.innerHTML = "";
+      clearJobLists();
       setStatus(
         "Unable to load openings right now. Please try again later.",
         true
@@ -591,9 +801,12 @@
     });
   }
 
-  jobListEl.addEventListener("scroll", function () {
+  function onJobListScroll() {
     if (popoverAnchor) positionDetailPopover(popoverAnchor);
-  });
+  }
+
+  firmHireListEl.addEventListener("scroll", onJobListScroll);
+  otherListEl.addEventListener("scroll", onJobListScroll);
 
   window.addEventListener(
     "resize",

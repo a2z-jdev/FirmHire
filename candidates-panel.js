@@ -45,13 +45,13 @@
   ];
 
   function jobsApiUrl() {
-    return window.FIRMHIRE_JOBS_API || "https://stg-jobscrapper.myskillstree.com/api/jobs";
+    return window.FIRMHIRE_JOBS_API || "https://prd-jobscrapper.myskillstree.com/api/jobs";
   }
 
   function firmHireJobsApiUrl() {
     return (
       window.FIRMHIRE_JDS_API ||
-      "https://prd.beanstalk.myskillstree.com/skill/api/v1/skills/dynamic/JDS?filter=costCenter%3ACSORG-146197%7Cmstatus%3A!ARCHIVE%7CjdsType%3A!SEARCH&sortField=createdTime&sortOrder=desc"
+      "https://prd.beanstalk.myskillstree.com/skill/api/v1/skills/dynamic/JDS?filter=costCenter%3ACSORG-146198%7Cmstatus%3A!ARCHIVE%7CjdsType%3A!SEARCH&sortField=createdTime&sortOrder=desc"
     );
   }
 

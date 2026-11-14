@@ -45,7 +45,7 @@
   ];
 
   function jobsApiUrl() {
-    return window.FIRMHIRE_JOBS_API || "https://stg-jobscrapper.myskillstree.com/api/jobs";
+    return window.FIRMHIRE_JOBS_API || "https://prd-jobscrapper.myskillstree.com/api/jobs";
   }
 
   function firmHireJobsApiUrl() {
